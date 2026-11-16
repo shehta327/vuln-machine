@@ -1,0 +1,15 @@
+# Reproducible OWASP Juice Shop target.
+#
+# IMPORTANT (reproducibility): the tag below is a starting point. On first run:
+#   1. docker compose pull
+#   2. docker images --digests | grep juice-shop      # copy the sha256 digest
+#   3. replace the "image:" line with the digest form, e.g.
+#        image: bkimminich/juice-shop@sha256:<digest>
+#      so every member and your before/after diff use the IDENTICAL build.
+services:
+  juice-shop:
+    image: bkimminich/juice-shop@sha256:9e437b456e444ff001d1663e4f6f05c796fe02f1058dd2651d6791a15b43dfeb  # tag v17.1.1 — pinned by digest for reproducibility
+    container_name: juice-shop-baseline
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
