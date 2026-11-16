@@ -1,0 +1,18 @@
+{
+  "captured_at": "20261108-234002",
+  "target": "http://localhost:3000",
+  "chain": "sql_injection",
+  "owner": "Abdelrahman",
+  "endpoint": "/rest/user/login",
+  "baseline": {
+    "status": 401,
+    "body_snippet": "Invalid email or password."
+  },
+  "probe": {
+    "input_email": "test'",
+    "status": 500,
+    "body_snippet": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9"
+  },
+  "verdict": "likely_injectable",
+  "step": "1_find_confirm"
+}
