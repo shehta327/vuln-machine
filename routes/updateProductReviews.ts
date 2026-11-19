@@ -14,10 +14,16 @@ const security = require('../lib/insecurity')
 module.exports = function productReviews () {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = security.authenticatedUsers.from(req) // vuln-code-snippet vuln-line forgedReviewChallenge
-    db.reviewsCollection.update( // vuln-code-snippet neutral-line forgedReviewChallenge
-      { _id: req.body.id }, // vuln-code-snippet vuln-line noSqlReviewsChallenge forgedReviewChallenge
+    // [SECURITY FIX] Reject non-string ids so a NoSQL operator object (e.g. {"$ne":-1}) can't match every review,
+    // and update only a single document (multi:false) instead of mass-updating all of them.
+    if (typeof req.body.id !== 'string') {
+      res.status(400).json({ error: 'Invalid review id' })
+      return
+    }
+    db.reviewsCollection.update(
+      { _id: req.body.id },
       { $set: { message: req.body.message } },
-      { multi: true } // vuln-code-snippet vuln-line noSqlReviewsChallenge
+      { multi: false }
     ).then(
       (result: { modified: number, original: Array<{ author: any }> }) => {
         challengeUtils.solveIf(challenges.noSqlReviewsChallenge, () => { return result.modified > 1 }) // vuln-code-snippet hide-line
